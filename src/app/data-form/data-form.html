@@ -1,1 +1,43 @@
-<p>data-form works!</p>
+<h1>Lista de tareas</h1>
+<!-- INPUTS -->
+<form class="row row-cols-lg-auto g-3 align-items-center">
+  <div class="col-12">
+    <label>Crear nueva tarea</label>
+    <div class="input-group">
+      <input
+        class="form-control"
+        type="text"
+        placeholder="Ingresar nueva tarea"
+        (input)="newTask($event)"
+        [value]="tarea"
+      />
+    </div>
+  </div>
+
+  <div class="col-12">
+    <label>Prioridad</label>
+    <select (change)="priority($event)" class="form-select" id="inlineFormSelectPref">
+      <option value="Alta">Alta</option>
+      <option value="Media">Media</option>
+      <option value="Baja">Baja</option>
+    </select>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="row g-3">
+    <div class="col-auto">
+      <button (click)="seveTask($event)" class="btn btn-success">Enviar</button>
+    </div>
+    <div class="col-auto">
+      <button (click)="cleanTask($event)" class="btn btn-danger">Limpiar</button>
+    </div>
+  </div>
+</form>
+
+<div>
+  <ul>
+    @for (i of lista; track i) {
+      <li> {{ i }} [{{ prioridad }}]</li>  
+    }
+  </ul>
+</div>

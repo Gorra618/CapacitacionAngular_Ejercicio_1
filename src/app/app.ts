@@ -4,9 +4,10 @@ import { DataForm } from './data-form/data-form';
 
 @Component({
   selector: 'app-root',
-  imports: [DataForm],
+  standalone: true,
+  imports: [RouterOutlet, DataForm],
   templateUrl: './app.html',
-  styleUrl: './app.scss',
+  styleUrls: ['./app.scss']
 })
 export class App {
   protected readonly title = signal('Ejercicio_1');
