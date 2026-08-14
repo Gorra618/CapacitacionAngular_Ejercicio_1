@@ -1,40 +1,46 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
+  FormBuilder,
   FormControl,
+  FormGroup,
+  ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 
 @Component({
   selector: 'app-data-form',
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './data-form.html',
   styleUrl: './data-form.scss',
 })
-export class DataForm implements OnInit {
-  tarea: string = '';
-  prioridad: string = '';
-  lista: string[] = [];
+export class DataForm {
+  lista: { tarea: string; prioridad: string }[] = [];
+  taskForm = new FormGroup({
+    tarea: new FormControl('', [Validators.required]),
+    prioridad: new FormControl('', [Validators.required]),
+  });
 
-  ngOnInit(): void {}
-
-  seveTask(event: Event) {
-    this.lista.push(this.tarea);
+  constructor(private fb: FormBuilder) {
+    this.taskForm = this.fb.group({
+      tarea: ['', Validators.required],
+      prioridad: ['', Validators.required],
+    });
   }
 
-  cleanTask(event: Event) {
-    this.lista = [];
+  guardarTarea(): void {
+    const tarea = this.taskForm.value.tarea?.trim();
+    const prioridad = this.taskForm.value.prioridad ?? '';
+
+    if (!tarea) {
+      return;
+    }
+
+    this.lista.push({ tarea, prioridad });
+    this.taskForm.reset();
   }
 
-  priority(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.prioridad = input.value;
+  clearTasks(event:Event){
+    this.lista = []
   }
 
-  newTask(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.tarea = input.value;
-  }
 }
