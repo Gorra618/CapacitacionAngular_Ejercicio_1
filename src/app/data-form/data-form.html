@@ -32,7 +32,7 @@
       <button type="submit" [disabled]="taskForm.invalid" class="btn btn-success">Enviar</button>
     </div>
     <div>
-      <button (click)="clearTasks($event)" class="btn btn-danger">Limpiar lista</button>
+      <button (click)="clearList($event)" class="btn btn-danger">Limpiar lista</button>
     </div>
   </div>
 </form>
@@ -40,7 +40,7 @@
 <div>
   <ul>
     @for (item of lista; track item.tarea) {
-      <li>{{ item.tarea }} [ {{ item.prioridad }} ] <button class="btn btn-danger">Eliminar</button></li>
+      <li>{{ item.tarea }} [ {{ item.prioridad }} ] <button class="btn btn-danger" (click)="deleteTask($event, $index)">Eliminar</button></li>
     }
   </ul>
 </div>

@@ -39,8 +39,12 @@ export class DataForm {
     this.taskForm.reset();
   }
 
-  clearTasks(event:Event){
-    this.lista = []
+  clearList(event: Event) {
+    this.lista = [];
   }
 
+  deleteTask(event: Event, index: number) {
+    event.preventDefault();
+    this.lista.splice(index, 1);
+  }
 }
