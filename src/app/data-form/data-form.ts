@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -6,24 +6,25 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ITarea } from '../models/i-tarea';
 
 @Component({
   selector: 'app-data-form',
   imports: [ReactiveFormsModule],
   templateUrl: './data-form.html',
-  styleUrl: './data-form.scss',
+  styleUrls: ['./data-form.scss'],
 })
-export class DataForm {
-  lista: { tarea: string; prioridad: string }[] = [];
-  taskForm = new FormGroup({
-    tarea: new FormControl('', [Validators.required]),
-    prioridad: new FormControl('', [Validators.required]),
-  });
+export class DataForm implements OnInit {
+  lista: ITarea[] = [];
+  taskForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.cargarTareas();
     this.taskForm = this.fb.group({
-      tarea: ['', Validators.required],
-      prioridad: ['', Validators.required],
+      tarea: new FormControl('', [Validators.required]),
+      prioridad: new FormControl('Alta', [Validators.required]),
     });
   }
 
@@ -35,16 +36,44 @@ export class DataForm {
       return;
     }
 
-    this.lista.push({ tarea, prioridad });
+    const newTask: ITarea = { tarea, prioridad };
+    this.lista.push(newTask);
+    this.guardarEnLocalStorage();
     this.taskForm.reset();
   }
 
-  clearList(event: Event) {
+  clearList(event: Event): void {
     this.lista = [];
+    this.guardarEnLocalStorage();
   }
 
-  deleteTask(event: Event, index: number) {
+  deleteTask(event: Event, index: number): void {
     event.preventDefault();
     this.lista.splice(index, 1);
+    this.guardarEnLocalStorage();
+  }
+
+  private guardarEnLocalStorage(): void {
+    localStorage.setItem('tareas', JSON.stringify(this.lista));
+  }
+
+  private cargarTareas(): void {
+    const tareasGuardadas = localStorage.getItem('tareas');
+    if (!tareasGuardadas) {
+      return;
+    }
+    try {
+      const parsed = JSON.parse(tareasGuardadas);
+      if (Array.isArray(parsed)) {
+        this.lista = parsed.filter(
+          (it) =>
+            it &&
+            typeof it.tarea === 'string' &&
+            typeof it.prioridad === 'string'
+        ) as ITarea[];
+      }
+    } catch {
+      this.lista = [];
+    }
   }
 }
